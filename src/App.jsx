@@ -7,11 +7,12 @@ import { BudgetDocumentPreview } from './components/BudgetDocumentPreview';
 import { CadastrosManager } from './components/CadastrosManager';
 import { HistoricoManager } from './components/HistoricoManager';
 import { exportToPDF } from './utils/pdfExport';
-import { Save, Printer, Download, Sparkles, AlertCircle } from 'lucide-react';
+import { Save, Printer, Download, Sparkles, AlertCircle, Edit3, Eye } from 'lucide-react';
 
 export const App = () => {
   const { user, currentOrcamento, saveOrcamento } = useApp();
   const [activeTab, setActiveTab] = useState('gerador');
+  const [mobileViewMode, setMobileViewMode] = useState('editor'); // 'editor' | 'preview'
   const [savedFeedback, setSavedFeedback] = useState(false);
   const [validationError, setValidationError] = useState('');
 
@@ -73,52 +74,73 @@ export const App = () => {
 
       <main className="main-container">
         {activeTab === 'gerador' && (
-          <div className="workspace-grid">
-            {/* PAINEL ESQUERDO: EDITAR CAMPOS */}
-            <div className="editor-card">
-              <div className="card-header-bar">
-                <h3>
-                  <Sparkles size={18} className="text-primary" />
-                  <span>Edição do Orçamento</span>
-                </h3>
+          <div>
+            {/* TOGGLE BAR EXCLUSIVA PARA CELULARES */}
+            <div className="mobile-view-toggle">
+              <button
+                className={`mobile-toggle-btn ${mobileViewMode === 'editor' ? 'active' : ''}`}
+                onClick={() => setMobileViewMode('editor')}
+              >
+                <Edit3 size={16} />
+                <span>Editar Formulário</span>
+              </button>
 
-                <div className="action-buttons">
-                  <button className="btn-action btn-success" onClick={handleSave}>
-                    <Save size={16} />
-                    <span>{savedFeedback ? 'Salvo!' : 'Salvar'}</span>
-                  </button>
-                </div>
-              </div>
-
-              {validationError && (
-                <div className="error-banner" style={{ margin: '16px 24px 0' }}>
-                  <AlertCircle size={18} />
-                  <span>{validationError}</span>
-                </div>
-              )}
-
-              <BudgetForm />
+              <button
+                className={`mobile-toggle-btn ${mobileViewMode === 'preview' ? 'active' : ''}`}
+                onClick={() => setMobileViewMode('preview')}
+              >
+                <Eye size={16} />
+                <span>Ver PDF ({currentOrcamento.pacienteNome || 'Novo'})</span>
+              </button>
             </div>
 
-            {/* PAINEL DIREITO: PRÉ-VISUALIZAÇÃO / PDF */}
-            <div className="preview-card">
-              <div className="card-header-bar">
-                <h3>Pré-Visualização do Documento</h3>
+            <div className={`workspace-grid show-${mobileViewMode}`}>
+              {/* PAINEL ESQUERDO: EDITAR CAMPOS */}
+              <div className="editor-card">
+                <div className="card-header-bar">
+                  <h3>
+                    <Sparkles size={18} className="text-primary" />
+                    <span>Edição do Orçamento</span>
+                  </h3>
 
-                <div className="action-buttons">
-                  <button className="btn-action" onClick={handlePrint} title="Imprimir e salvar orçamento">
-                    <Printer size={16} />
-                    <span>Imprimir</span>
-                  </button>
-
-                  <button className="btn-action btn-pdf" onClick={handleExportPDF} title="Salvar e Baixar PDF">
-                    <Download size={16} />
-                    <span>Exportar PDF</span>
-                  </button>
+                  <div className="action-buttons">
+                    <button className="btn-action btn-success" onClick={handleSave}>
+                      <Save size={16} />
+                      <span>{savedFeedback ? 'Salvo!' : 'Salvar'}</span>
+                    </button>
+                  </div>
                 </div>
+
+                {validationError && (
+                  <div className="error-banner" style={{ margin: '12px 16px 0' }}>
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                <BudgetForm />
               </div>
 
-              <BudgetDocumentPreview />
+              {/* PAINEL DIREITO: PRÉ-VISUALIZAÇÃO / PDF */}
+              <div className="preview-card">
+                <div className="card-header-bar">
+                  <h3>Pré-Visualização do Documento</h3>
+
+                  <div className="action-buttons">
+                    <button className="btn-action" onClick={handlePrint} title="Imprimir e salvar orçamento">
+                      <Printer size={16} />
+                      <span>Imprimir</span>
+                    </button>
+
+                    <button className="btn-action btn-pdf" onClick={handleExportPDF} title="Salvar e Baixar PDF">
+                      <Download size={16} />
+                      <span>Exportar PDF</span>
+                    </button>
+                  </div>
+                </div>
+
+                <BudgetDocumentPreview />
+              </div>
             </div>
           </div>
         )}
