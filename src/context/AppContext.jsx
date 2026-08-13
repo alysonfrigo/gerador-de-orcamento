@@ -3,6 +3,39 @@ import { initialHospitais, initialProcedimentos, initialPacientes, initialFormas
 
 const AppContext = createContext();
 
+export const getEmptyOrcamento = () => ({
+  id: null,
+  procedimentoId: '',
+  procedimentoNome: '',
+  pacienteId: '',
+  pacienteNome: '',
+  hospitalId: '',
+  hospitalNome: '',
+  cidadeData: `Cascavel, ${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`,
+  
+  diariaHospitalar: 0,
+  observacaoInternacao: '',
+  
+  anestesiaHonorarios: 0,
+  observacaoAnestesia: 'Pagamento realizado diretamente à equipe de anestesia, no dia da consulta pré anestésica ou até um dia antes da cirurgia.',
+  
+  descricaoEquipe: '',
+  valorEquipeVista: 0,
+  valorEquipeCartao: 0,
+  parcelamentoTexto: 'Conforme condições e taxas da operadora do cartão.',
+  
+  kitPosOperatorioValor: 0,
+  kitPosOperatorioItens: '',
+  seguroCirurgia: 0,
+  
+  observacoesTotais: 'Possíveis alterações no tempo cirúrgico e/ou no período de internação podem gerar ajustes nos valores cobrados pelo hospital e pela equipe de anestesiologia.',
+  
+  formasPagamento: initialFormasPagamentoDefinidas,
+  
+  gastosExtrasTexto: '',
+  validadeDias: 30
+});
+
 export const AppProvider = ({ children }) => {
   // Autenticação
   const [user, setUser] = useState(() => {
@@ -54,39 +87,12 @@ export const AppProvider = ({ children }) => {
       .catch(() => {});
   }, []);
 
-  // Estado do Orçamento em Edição
-  const [currentOrcamento, setCurrentOrcamento] = useState({
-    id: null,
-    procedimentoId: initialProcedimentos[0].id,
-    procedimentoNome: initialProcedimentos[0].nome,
-    pacienteId: initialPacientes[0].id,
-    pacienteNome: initialPacientes[0].nome,
-    hospitalId: initialHospitais[0].id,
-    hospitalNome: initialHospitais[0].nome,
-    cidadeData: `Cascavel, ${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`,
-    
-    diariaHospitalar: initialHospitais[0].diariaHospitalar,
-    observacaoInternacao: initialHospitais[0].observacaoInternacao,
-    
-    anestesiaHonorarios: initialProcedimentos[0].anestesiaHonorarios,
-    observacaoAnestesia: 'Pagamento realizado diretamente à equipe de anestesia, no dia da consulta pré anestésica ou até um dia antes da cirurgia.',
-    
-    descricaoEquipe: initialProcedimentos[0].descricaoEquipe,
-    valorEquipeVista: initialProcedimentos[0].valorEquipeVista,
-    valorEquipeCartao: initialProcedimentos[0].valorEquipeCartao,
-    parcelamentoTexto: 'Conforme condições e taxas da operadora do cartão.',
-    
-    kitPosOperatorioValor: initialProcedimentos[0].kitPosOperatorioValor,
-    kitPosOperatorioItens: initialProcedimentos[0].kitPosOperatorioItens.join('\n'),
-    seguroCirurgia: initialProcedimentos[0].seguroCirurgia,
-    
-    observacoesTotais: 'Possíveis alterações no tempo cirúrgico e/ou no período de internação podem gerar ajustes nos valores cobrados pelo hospital e pela equipe de anestesiologia.',
-    
-    formasPagamento: initialFormasPagamentoDefinidas,
-    
-    gastosExtrasTexto: initialProcedimentos[0].gastosExtras.join('\n'),
-    validadeDias: 30
-  });
+  // Estado do Orçamento em Edição (Começa Vazio conforme solicitado)
+  const [currentOrcamento, setCurrentOrcamento] = useState(getEmptyOrcamento());
+
+  const resetCurrentOrcamento = () => {
+    setCurrentOrcamento(getEmptyOrcamento());
+  };
 
   // LocalStorage backups
   useEffect(() => {
@@ -219,6 +225,10 @@ export const AppProvider = ({ children }) => {
 
   // Seleções para o Orçamento
   const selectPacienteForBudget = (pacienteId) => {
+    if (!pacienteId) {
+      setCurrentOrcamento(prev => ({ ...prev, pacienteId: '', pacienteNome: '' }));
+      return;
+    }
     const pac = pacientes.find(p => p.id === pacienteId);
     if (pac) {
       setCurrentOrcamento(prev => ({
@@ -230,6 +240,16 @@ export const AppProvider = ({ children }) => {
   };
 
   const selectHospitalForBudget = (hospitalId) => {
+    if (!hospitalId) {
+      setCurrentOrcamento(prev => ({
+        ...prev,
+        hospitalId: '',
+        hospitalNome: '',
+        diariaHospitalar: 0,
+        observacaoInternacao: ''
+      }));
+      return;
+    }
     const hosp = hospitais.find(h => h.id === hospitalId);
     if (hosp) {
       setCurrentOrcamento(prev => ({
@@ -243,6 +263,22 @@ export const AppProvider = ({ children }) => {
   };
 
   const selectProcedimentoForBudget = (procedimentoId) => {
+    if (!procedimentoId) {
+      setCurrentOrcamento(prev => ({
+        ...prev,
+        procedimentoId: '',
+        procedimentoNome: '',
+        descricaoEquipe: '',
+        valorEquipeVista: 0,
+        valorEquipeCartao: 0,
+        anestesiaHonorarios: 0,
+        kitPosOperatorioValor: 0,
+        kitPosOperatorioItens: '',
+        seguroCirurgia: 0,
+        gastosExtrasTexto: ''
+      }));
+      return;
+    }
     const proc = procedimentos.find(p => p.id === procedimentoId);
     if (proc) {
       setCurrentOrcamento(prev => ({
@@ -322,6 +358,7 @@ export const AppProvider = ({ children }) => {
       deletePaciente,
       currentOrcamento,
       setCurrentOrcamento,
+      resetCurrentOrcamento,
       selectPacienteForBudget,
       selectHospitalForBudget,
       selectProcedimentoForBudget,

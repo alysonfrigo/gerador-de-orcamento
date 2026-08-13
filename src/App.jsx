@@ -7,25 +7,50 @@ import { BudgetDocumentPreview } from './components/BudgetDocumentPreview';
 import { CadastrosManager } from './components/CadastrosManager';
 import { HistoricoManager } from './components/HistoricoManager';
 import { exportToPDF } from './utils/pdfExport';
-import { Save, Printer, Download, Sparkles } from 'lucide-react';
+import { Save, Printer, Download, Sparkles, AlertCircle } from 'lucide-react';
 
 export const App = () => {
   const { user, currentOrcamento, saveOrcamento } = useApp();
   const [activeTab, setActiveTab] = useState('gerador');
   const [savedFeedback, setSavedFeedback] = useState(false);
+  const [validationError, setValidationError] = useState('');
 
   if (!user) {
     return <Login />;
   }
 
+  const validateOrcamento = () => {
+    setValidationError('');
+    if (!currentOrcamento.hospitalId) {
+      const msg = 'Selecione um Hospital antes de continuar.';
+      setValidationError(msg);
+      alert('⚠️ ' + msg);
+      return false;
+    }
+    if (!currentOrcamento.pacienteId && !currentOrcamento.pacienteNome?.trim()) {
+      const msg = 'Selecione ou informe um Paciente antes de continuar.';
+      setValidationError(msg);
+      alert('⚠️ ' + msg);
+      return false;
+    }
+    if (!currentOrcamento.procedimentoId) {
+      const msg = 'Selecione um Procedimento antes de continuar.';
+      setValidationError(msg);
+      alert('⚠️ ' + msg);
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async () => {
+    if (!validateOrcamento()) return;
     await saveOrcamento();
     setSavedFeedback(true);
     setTimeout(() => setSavedFeedback(false), 2500);
   };
 
   const handleExportPDF = async () => {
-    // Auto-salvar no histórico/banco de dados ao exportar PDF
+    if (!validateOrcamento()) return;
     await saveOrcamento();
     setSavedFeedback(true);
     setTimeout(() => setSavedFeedback(false), 2500);
@@ -37,7 +62,7 @@ export const App = () => {
   };
 
   const handlePrint = async () => {
-    // Auto-salvar ao imprimir
+    if (!validateOrcamento()) return;
     await saveOrcamento();
     window.print();
   };
@@ -64,6 +89,13 @@ export const App = () => {
                   </button>
                 </div>
               </div>
+
+              {validationError && (
+                <div className="error-banner" style={{ margin: '16px 24px 0' }}>
+                  <AlertCircle size={18} />
+                  <span>{validationError}</span>
+                </div>
+              )}
 
               <BudgetForm />
             </div>

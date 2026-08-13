@@ -16,6 +16,15 @@ export const initialHospitais = [
     estimativaHoras: 5,
     valorHoraExcedente: 1200.00,
     observacaoInternacao: 'O valor informado referente ao internamento hospitalar considera uma estimativa de até 5 horas de cirurgia. Como não é possível prever ou garantir previamente o tempo exato do procedimento, caso a cirurgia ultrapasse o período estimado, poderá haver cobrança adicional de R$ 1.200,00 por hora excedente, conforme política do hospital.'
+  },
+  {
+    id: 'hosp-3',
+    nome: 'Hospital São Lucas – Cascavel/PR',
+    cidade: 'Cascavel/PR',
+    diariaHospitalar: 6000.00,
+    estimativaHoras: 5,
+    valorHoraExcedente: 1100.00,
+    observacaoInternacao: 'Possíveis alterações no tempo cirúrgico e/ou no período de internação podem gerar ajustes nos valores cobrados pelo hospital e pela equipe de anestesiologia conforme normas da instituição.'
   }
 ];
 

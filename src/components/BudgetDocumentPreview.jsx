@@ -43,9 +43,30 @@ export const BudgetDocumentPreview = () => {
         <h1 className="doc-title-main">PROPOSTA DE ORÇAMENTO – PROCEDIMENTO CIRÚRGICO</h1>
         
         <div className="doc-header-info">
-          <p><strong>Procedimento proposto:</strong> {currentOrcamento.procedimentoNome || '---'}</p>
-          <p><strong>Paciente:</strong> {currentOrcamento.pacienteNome || '---'}</p>
-          <p><strong>Local:</strong> {currentOrcamento.hospitalNome || '---'}</p>
+          <p>
+            <strong>Procedimento proposto:</strong>{' '}
+            {currentOrcamento.procedimentoNome ? (
+              currentOrcamento.procedimentoNome
+            ) : (
+              <span style={{ color: '#dc2626', fontStyle: 'italic' }}>[Selecione um Procedimento]</span>
+            )}
+          </p>
+          <p>
+            <strong>Paciente:</strong>{' '}
+            {currentOrcamento.pacienteNome ? (
+              currentOrcamento.pacienteNome
+            ) : (
+              <span style={{ color: '#dc2626', fontStyle: 'italic' }}>[Selecione um Paciente]</span>
+            )}
+          </p>
+          <p>
+            <strong>Local:</strong>{' '}
+            {currentOrcamento.hospitalNome ? (
+              currentOrcamento.hospitalNome
+            ) : (
+              <span style={{ color: '#dc2626', fontStyle: 'italic' }}>[Selecione um Hospital]</span>
+            )}
+          </p>
           <p><strong>Data:</strong> {currentOrcamento.cidadeData || '---'}</p>
         </div>
 
@@ -77,9 +98,11 @@ export const BudgetDocumentPreview = () => {
 
         <div className="doc-item-row">
           <div className="doc-item-title">Equipe Cirúrgica</div>
-          <p style={{ fontSize: '13px', color: '#374151', marginBottom: '4px' }}>
-            {currentOrcamento.descricaoEquipe}
-          </p>
+          {currentOrcamento.descricaoEquipe && (
+            <p style={{ fontSize: '13px', color: '#374151', marginBottom: '4px' }}>
+              {currentOrcamento.descricaoEquipe}
+            </p>
+          )}
           <p><strong>Pagamento à vista</strong></p>
           <p>• Transferência bancária ou dinheiro: R$ {formatMoney(currentOrcamento.valorEquipeVista)}</p>
           <p style={{ marginTop: '4px' }}><strong>Pagamento no cartão de crédito</strong></p>
