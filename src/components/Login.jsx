@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Stethoscope, User, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { User, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 
 export const Login = () => {
   const { login } = useApp();
@@ -22,8 +22,8 @@ export const Login = () => {
     <div className="login-wrapper">
       <div className="login-card">
         <div className="login-header">
-          <div className="icon-badge">
-            <Stethoscope size={32} />
+          <div className="avatar-badge-login">
+            <img src="/bruna.png" alt="Bruna Izadora" />
           </div>
           <h1>Gerador de Orçamento</h1>
           <p>Plataforma de Orçamentos Cirúrgicos</p>

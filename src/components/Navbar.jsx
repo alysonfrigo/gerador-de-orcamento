@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Stethoscope, FileText, Database, History, LogOut, DownloadCloud } from 'lucide-react';
+import { FileText, Database, History, LogOut, DownloadCloud } from 'lucide-react';
 
 export const Navbar = ({ activeTab, setActiveTab }) => {
   const { user, logout } = useApp();
@@ -35,8 +35,8 @@ export const Navbar = ({ activeTab, setActiveTab }) => {
     <header className="app-header">
       <div className="header-container">
         <div className="brand">
-          <div className="brand-logo">
-            <Stethoscope size={22} />
+          <div className="brand-logo-img">
+            <img src="/bruna.png" alt="Logo Bruna Izadora" />
           </div>
           <div className="brand-title">
             <h2>Gerador de Orçamento</h2>
@@ -79,8 +79,8 @@ export const Navbar = ({ activeTab, setActiveTab }) => {
           )}
 
           <div className="user-badge">
-            <div className="user-avatar">
-              {user?.username?.charAt(0).toUpperCase() || 'B'}
+            <div className="user-avatar-img">
+              <img src="/bruna.png" alt="Bruna Izadora" />
             </div>
             <span className="user-info">{user?.nome || 'Bruna Izadora'}</span>
           </div>
